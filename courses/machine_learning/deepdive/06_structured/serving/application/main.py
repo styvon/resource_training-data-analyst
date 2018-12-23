@@ -29,8 +29,8 @@ from oauth2client.client import GoogleCredentials
 from google.appengine.api import app_identity
 
 
-credentials = GoogleCredentials.get_application_default()
-api = discovery.build('ml', 'v1', credentials=credentials)
+credentials = GoogleCredentials.get_application_default() # Set the credentials to use Google Application Default Credentials (recommended way to authorize calls to our APIs when building apps deployed on AppEngine)
+api = discovery.build('ml', 'v1', credentials=credentials) # Specify the api name (ML Engine API) and version to use
 project = app_identity.get_application_id()
 model_name = os.getenv('MODEL_NAME', 'babyweight')
 version_name = os.getenv('VERSION_NAME', 'ml_on_gcp')
@@ -41,8 +41,8 @@ app = Flask(__name__)
 
 def get_prediction(features):
   input_data = {'instances': [features]}
-  parent = 'projects/%s/models/%s/versions/%s' % (project, model_name, version_name)
-  prediction = api.projects().predict(body=input_data, name=parent).execute()
+  parent = 'projects/%s/models/%s/versions/%s' % (project, model_name, version_name) # specify, using the parent variable, the name of your trained model deployed on Cloud MLE
+  prediction = api.projects().predict(body=input_data, name=parent).execute() # build the call request by specifying it in the prediction variable
   return prediction['predictions'][0]['predictions'][0]
 
 
@@ -80,7 +80,7 @@ def predict():
   features['is_male'] = gender2str(data['baby_gender'])
   features['mother_age'] = float(data['mother_age'])
   features['plurality'] = plurality2str(data['plurality'])
-  features['gestation_weeks'] = float(data['gestation_weeks'])
+  features['gestation_weeks'] = float(data['gestation_weeks']) # get gestation_weeks from the form data and cast into a float within the features array
 
   prediction = get_prediction(features)
   return jsonify({'result': '{:.2f} lbs.'.format(prediction)})
