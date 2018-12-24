@@ -22,7 +22,7 @@ import tensorflow as tf
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
-TIMESERIES_COL = 'height'
+TIMESERIES_COL = 'height' # key for retrieving feature dictionary 
 N_OUTPUTS = 1  # in each sequence, 1-49 are features, and 50 is label
 SEQ_LEN = None
 DEFAULTS = None
@@ -230,7 +230,7 @@ def sequence_regressor(features, labels, mode, params):
         # 2c. eval metric
         eval_metric_ops = {
             "RMSE": rmse,
-            "RMSE_same_as_last": same_as_last_benchmark(features, labels),
+            "RMSE_same_as_last": same_as_last_benchmark(features, labels), # obs from previous point of time
         }
 
     # 3. Create predictions
@@ -257,7 +257,7 @@ def train_and_evaluate(output_dir, hparams):
     get_valid = read_dataset(hparams['eval_data_path'],
                              tf.estimator.ModeKeys.EVAL,
                              1000)
-    estimator = tf.estimator.Estimator(model_fn=sequence_regressor,
+    estimator = tf.estimator.Estimator(model_fn=sequence_regressor, # customized sequence regressor fn
                                        params=hparams,
                                        config=tf.estimator.RunConfig(
                                            save_checkpoints_secs=
