@@ -75,14 +75,18 @@ def rnn_model(features, mode, params):
 
     # 1. dynamic_rnn needs 3D shape: [BATCH_SIZE, N_INPUTS, 1]
     x = tf.reshape(features[TIMESERIES_COL], [-1, N_INPUTS, 1])
+#     print('rnn_model: x: {}'.format(x))
 
     # 2. configure the RNN
     cell = tf.nn.rnn_cell.GRUCell(CELL_SIZE)
     outputs, state = tf.nn.dynamic_rnn(cell, x, dtype=tf.float32) # state = activation for the last time step
+#     print('rnn_model: state: {}'.format(state))
 
     # 3. pass rnn output through a dense layer
     h1 = tf.layers.dense(state, N_INPUTS // 2, activation=tf.nn.relu)
+#     print('rnn_model: h1: {}'.format(h1))
     predictions = tf.layers.dense(h1, 1, activation=None)  # (?, 1)
+#     print('rnn_model: predictions: {}'.format(predictions))
     return predictions
 
 
