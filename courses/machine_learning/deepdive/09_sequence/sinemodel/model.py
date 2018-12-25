@@ -78,7 +78,7 @@ def rnn_model(features, mode, params):
 
     # 2. configure the RNN
     cell = tf.nn.rnn_cell.GRUCell(CELL_SIZE)
-    outputs, state = tf.nn.dynamic_rnn(cell, x, dtype=tf.float32)
+    outputs, state = tf.nn.dynamic_rnn(cell, x, dtype=tf.float32) # state = activation for the last time step
 
     # 3. pass rnn output through a dense layer
     h1 = tf.layers.dense(state, N_INPUTS // 2, activation=tf.nn.relu)
